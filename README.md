@@ -4,7 +4,7 @@
 
 ## Как играть  
 
-1. Укажите название вашей базы данных и пароль в конфигурационном файле.  
+1. Укажите название вашей базы данных и пароль в application.properties.  
 2. Запустите проект.  
 3. Раздайте интернет или подключитесь с другом к одной сети.  
 4. Зарегистрируйтесь.  
@@ -24,7 +24,7 @@ This site is designed for playing **Sea Battle** with friends.
 
 ## How to Play  
 
-1. Enter your database name and password in the config file.  
+1. Enter your database name and password in the application.properties file.  
 2. Launch the project.  
 3. Share the Internet or connect to the same network with a friend.  
 4. Complete the registration process.  
