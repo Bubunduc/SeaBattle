@@ -1,0 +1,21 @@
+<div class="p-3 text-bg-dark" th:fragment="header">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center">
+
+            <ul class="nav col-12 col-lg-auto me-auto mb-2 mb-lg-0">
+                <li><a th:if="${isAuthenticated == true}" href="/profile" class="nav-link px-2 text-white" th:text="${username}"></a></li>
+                <li><a href="/" class="nav-link px-2 text-white">Главная</a></li>
+                <li><a th:if="${isAuthenticated == true}" href="/game/game" class="nav-link px-2 text-white">Бой</a></li>
+            </ul>
+            <div th:if="${isAuthenticated == true}" class="text-end" >
+                <button type="button" class="btn btn-outline-light me-2" ><a th:href="@{/logout}" style="color: inherit; text-decoration: none;">Выйти</a></button>
+
+            </div>
+            <div th:if="${isAuthenticated == false or isAuthenticated == null}" class="text-end" >
+                <button type="button" class="btn btn-outline-light me-2" ><a href="/login" style="color: inherit; text-decoration: none;">Войти</a></button>
+                <button type="button" class="btn btn-warning"><a href="/register" style="color: inherit; text-decoration: none;">Зарегистрироваться</a></button>
+            </div>
+
+        </div>
+    </div>
+</div>

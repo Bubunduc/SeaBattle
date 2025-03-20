@@ -1,0 +1,42 @@
+/* Общие стили для таблицы */
+.game-table {
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.game-cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #000;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.game-cell.ship {
+    background-color: #333; /* Клетки с кораблем */
+}
+
+/* Стили для контейнера с двумя полями */
+#gameFields {
+    display: flex;
+    justify-content: space-between;
+}
+
+.game-field {
+    width: 45%;
+}
+.opponent-cell.hit {
+    position: relative;
+}
+
+.opponent-cell.hit::after {
+    content: '✕'; /* Символ красного крестика */
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Чтобы крестик не блокировал клики */
+}

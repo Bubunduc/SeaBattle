@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Личный кабинет</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<header th:insert="~{blocks/header :: header}"></header>
+
+<div class="container mt-5 mb-5">
+    <h1 th:text="'Имя пользователя: ' + ${username}"></h1>
+    <h2 th:text="'Победы: ' + ${wins}"></h2>
+    <h2 th:text="'Поражения: ' + ${defeats}"></h2>
+
+    <!-- Таблица с результатами игр -->
+    <h3 class="mt-4">Результаты игр</h3>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Игрок</th>
+            <th>Противник</th>
+            <th>Дата</th>
+            <th>Результат</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Проходим по списку результатов и отображаем их -->
+        <tr th:each="result : ${results}">
+            <td th:text="${result.winner}"></td>
+            <td th:text="${result.loser}"></td>
+            <td th:text="${#temporals.format(result.gameDateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+
+            <td th:classappend="${result.winner == username} ? 'text-success' : 'text-danger'"
+                th:text="${result.winner == username} ? 'Победа' : 'Поражение'"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<footer th:insert="~{blocks/footer :: footer}"></footer>
+</body>
+</html>
