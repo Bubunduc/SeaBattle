@@ -38,11 +38,6 @@ public class RegistrationController {
             model.addAttribute("error", "Такой пользователь уже существует");
             return "register";
         }
-        if (!password.equals(repeat_password)) {
-            model.addAttribute("error", "Пароли не совпадают");
-            return "register";
-        }
-
         try {
             userService.saveUser(login, password);
         } catch (Exception e) {

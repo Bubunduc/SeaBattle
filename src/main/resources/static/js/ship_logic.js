@@ -37,13 +37,14 @@ function showGameField() {
             <button onclick="setCurrentShip(2)">Эсминец (2 клетки)</button>
             <button onclick="setCurrentShip(1)">Подлодка (1 клетка)</button>
         </div>
+        <button id="randomplace" class="btn btn-primary mt-3">Расставить корабли случайно</button>
         <button id="sendShipsBtn" class="btn btn-primary mt-3">Отправить корабли</button>
 
         
         <div id="chat" class="mt-5">
             <h3>Чат</h3>
             <div id="chat-messages" style="border: 1px solid #ccc; height: 200px; overflow-y: scroll; padding: 10px; background-color: #f9f9f9;">
-                <!-- Сообщения будут здесь -->
+                
             </div>
             <div class="input-group mt-2">
                 <input type="text" id="chat-input" class="form-control" placeholder="Введите сообщение...">
@@ -57,7 +58,7 @@ function showGameField() {
 
     addShipPlacementListeners();
     document.getElementById('sendShipsBtn').addEventListener('click', sendShipsToServer);
-
+    document.getElementById('randomplace').addEventListener('click', randomPlace);
     // Обработчик отправки сообщений
     document.getElementById('send-chat-btn').addEventListener('click', () => {
         const input = document.getElementById('chat-input');
@@ -76,7 +77,11 @@ function showGameField() {
         }
     });
 }
+//случайно размещение кораблей на сервере
+function randomPlace()
+{
 
+}
 // Функция для отображения сообщения в чате
 function appendChatMessage(sender, message) {
     const chatBox = document.getElementById('chat-messages');
@@ -157,20 +162,7 @@ function addHandleCellClick()
         alert("Выберите корабль перед размещением!");
     }
 }
-/*{
-    if (currentShip) {
-        const row = parseInt(this.getAttribute('data-row'));
-        const col = parseInt(this.getAttribute('data-col'));
-        if (placeShip(row, col, currentShip,shipDirection)) {
 
-        } else {
-            alert("Невозможно разместить корабль здесь!");
-        }
-    } else {
-        alert("Выберите корабль перед размещением!");
-    }
-}
-*/
 function removeShip(shipIndex) {
     const ship = playerShips[shipIndex];
 
