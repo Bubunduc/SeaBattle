@@ -23,6 +23,7 @@
         };
         let stompClient;
         let playerShips = [];
+        let opponentShips = [];
         const isCreated = [[${iscreate}]];
         const gameOwner = '[[${gameOwner}]]';
         var username = '[[${username}]]';
@@ -73,7 +74,8 @@
                             console.log(username)
                             if (username == data.opponent){
                                 console.log("Размещение кораблей противника:", data.ships);
-                                updateOpponentField(data.ships);
+                                opponentShips = data.ships
+                                updateOpponentField(opponentShips);
                                 opponentfieldfull = true
                             }
 
@@ -115,7 +117,7 @@
                                     updateTurn(opponent);
                                 }
 
-                                updateField(data.row,data.col);
+                                updateField(data.row,data.col,opponentShips);
 
                                 console.log(shipsleft);
 

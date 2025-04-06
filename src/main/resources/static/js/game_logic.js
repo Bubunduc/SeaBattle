@@ -27,6 +27,7 @@ function addOpponentHandleClick(){
         cell.addEventListener('click', handleOpponentFieldClick);
     });
 }
+
 function handleOpponentFieldClick() {
 
     if (previousCross) {
@@ -46,6 +47,81 @@ function handleOpponentFieldClick() {
     }
 
 }
+function markSurroundingCells(ship, fieldPrefix) {
+    const directions = [-1, 0, 1]; // для смещения по row и col
+
+    for (const cell of ship.cells) {
+        for (let dRow of directions) {
+            for (let dCol of directions) {
+                const newRow = cell.row + dRow;
+                const newCol = cell.col + dCol;
+
+                // Проверяем, что координаты в пределах поля
+                if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
+                    const neighborCell = document.getElementById(`${fieldPrefix}-cell-${newRow}-${newCol}`);
+
+                    // Проверяем, что клетка не часть корабля и не уже отмечена
+                    if (neighborCell && !neighborCell.classList.contains("ship") && !neighborCell.innerHTML) {
+                        neighborCell.innerHTML = "❌";
+                    }
+                }
+            }
+        }
+    }
+}
+function paintDestroyedShip(ship,fieldPrefix)
+{
+    var ship_len = ship.length
+    var count = 0
+    console.log(ship)
+    if (fieldPrefix == "opponent"){
+
+        cell.classList.replace(`${fieldPrefix}-ship`,`ship`)
+    }
+    if(ship_len>1) {
+        for (const cell of ship.cells) {
+            var ship_cell = document.getElementById(`${fieldPrefix}-cell-${cell.row}-${cell.col}`)
+            if (ship_cell.innerHTML =="❌" ) {
+                count += 1;
+            }
+        }
+    }
+    else
+    {
+        count = 1;
+    }
+    if (count==ship_len)
+    {
+        alert("Корабль с длиной палуб "+ship_len+" потоплен!")
+        markSurroundingCells(ship,fieldPrefix)
+    }
+    else {
+        if (fieldPrefix == "opponent")
+        {
+            alert("Попадание!!!");
+        }
+        else
+        {
+            alert("Ваш корабль подбит!");
+        }
+
+    }
+}
+function findShipByCell(ships, targetRow, targetCol) {
+    console.log("Ищем корабль по координатам:", targetRow, targetCol);
+
+    for (const ship of ships) {
+        for (const cell of ship.cells) {
+            console.log(`Проверяем ячейку корабля: row=${cell.row}, col=${cell.col}`);
+            if (cell.row === targetRow && cell.col === targetCol) {
+                console.log("Найдено совпадение!");
+                return ship;
+            }
+        }
+    }
+    console.log("Совпадений не найдено.");
+    return null;
+}
 
 function sendAttackToServer() {
     if(isyourturn==false){
@@ -61,9 +137,34 @@ function sendAttackToServer() {
         var hit = false;
         if(cell.classList.contains("opponent-ship"))
         {
-         console.log(shipsleft)
-             alert("Попадание!!!");
+            console.log(shipsleft)
+
+            console.log(playerShips)
+            var ship = findShipByCell(opponentShips,clickedrow,clickedcol)
+            var ship_len = ship.length
+            var count = 0
+            console.log(ship)
              cell.classList.replace("opponent-ship","ship")
+            if(ship_len>1) {
+                for (const cell of ship.cells) {
+                    var ship_cell = document.getElementById(`opponent-cell-${cell.row}-${cell.col}`)
+                    if (ship_cell.classList.contains("ship")) {
+                        count += 1;
+                    }
+                }
+            }
+            else
+            {
+                count = 1;
+            }
+            if (count==ship_len)
+            {
+                alert("Корабль с длиной палуб "+ship_len+" потоплен!")
+                markSurroundingCells(ship,"opponent")
+            }
+            else {
+                alert("Попадание!!!");
+            }
              isyourturn = true;
              hit = true
         }
@@ -87,7 +188,7 @@ function sendAttackToServer() {
     updateTurn(opponent)
     }
 }
-function updateField(row,col)
+function updateField(row,col,opponentShips)
 {
     const cell = document.getElementById(`player-cell-${row}-${col}`);
     cell.innerHTML = "❌";
@@ -108,7 +209,9 @@ function updateField(row,col)
             stompClient.send('/app/game/result', {}, JSON.stringify(winnerData));
         }
         else {
-            alert("Ваш корабль подбит!");
+            var ship = findShipByCell(playerShips,row,col)
+            console.log(ship)
+            paintDestroyedShip(ship,"player")
         }
 
     }
