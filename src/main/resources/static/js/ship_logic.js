@@ -3,19 +3,20 @@ function showGameField() {
     gameField.classList.add('container', 'mt-5');
     const playerField = createField('player');
     const opponentField = createField('opponent');
+
     gameField.innerHTML = `
-                <h2 id ="turn">Игровое поле</h2>
-                <p id="players">Игра началась между: ${username} и ${opponent}</p>
-                <div id="remaining-ships">
-    <h3>Оставшиеся корабли:</h3>
-    <ul>
-        <li>Линкор (4 клетки): <span id="ship-4">1</span></li>
-        <li>Крейсеры (3 клетки): <span id="ship-3">2</span></li>
-        <li>Эсминцы (2 клетки): <span id="ship-2">3</span></li>
-        <li>Подлодки (1 клетка): <span id="ship-1">4</span></li>
-    </ul>
-            </div>
-                <div id="gameFields">
+        <h2 id="turn">Игровое поле</h2>
+        <p id="players">Игра началась между: ${username} и ${opponent}</p>
+        <div id="remaining-ships">
+            <h3>Оставшиеся корабли:</h3>
+            <ul>
+                <li>Линкор (4 клетки): <span id="ship-4">1</span></li>
+                <li>Крейсеры (3 клетки): <span id="ship-3">2</span></li>
+                <li>Эсминцы (2 клетки): <span id="ship-2">3</span></li>
+                <li>Подлодки (1 клетка): <span id="ship-1">4</span></li>
+            </ul>
+        </div>
+        <div id="gameFields" class="d-flex justify-content-between">
             <div class="game-field">
                 <h3>Ваше поле</h3>
                 ${playerField}
@@ -31,21 +32,60 @@ function showGameField() {
         <h1 id="shiplength">Длина текущего корабля: </h1>
         <div id="ship-selection">
             <h3>Выберите корабль для размещения:</h3>
-                <button onclick="setCurrentShip(4)">Линкор (4 клетки)</button>
-                <button onclick="setCurrentShip(3)">Крейсер (3 клетки)</button>
-                <button onclick="setCurrentShip(2)">Эсминец (2 клетки)</button>
-                <button onclick="setCurrentShip(1)">Подлодка (1 клетка)</button>
+            <button onclick="setCurrentShip(4)">Линкор (4 клетки)</button>
+            <button onclick="setCurrentShip(3)">Крейсер (3 клетки)</button>
+            <button onclick="setCurrentShip(2)">Эсминец (2 клетки)</button>
+            <button onclick="setCurrentShip(1)">Подлодка (1 клетка)</button>
         </div>
-
         <button id="sendShipsBtn" class="btn btn-primary mt-3">Отправить корабли</button>
-            `;
-    const footer = document.querySelector('footer');
 
-    // Вставляем новый элемент перед footer
+        
+        <div id="chat" class="mt-5">
+            <h3>Чат</h3>
+            <div id="chat-messages" style="border: 1px solid #ccc; height: 200px; overflow-y: scroll; padding: 10px; background-color: #f9f9f9;">
+                <!-- Сообщения будут здесь -->
+            </div>
+            <div class="input-group mt-2">
+                <input type="text" id="chat-input" class="form-control" placeholder="Введите сообщение...">
+                <button id="send-chat-btn" class="btn btn-secondary">Отправить</button>
+            </div>
+        </div>
+    `;
+
+    const footer = document.querySelector('footer');
     footer.parentNode.insertBefore(gameField, footer);
-    addShipPlacementListeners()
+
+    addShipPlacementListeners();
     document.getElementById('sendShipsBtn').addEventListener('click', sendShipsToServer);
+
+    // Обработчик отправки сообщений
+    document.getElementById('send-chat-btn').addEventListener('click', () => {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        if (message !== '') {
+            appendChatMessage(username, message);
+            data = {
+                "action":"chat",
+                "sender":username,
+                "message":message,
+                'game_owner':gameOwner
+            }
+            stompClient.send('/app/game/chat', {}, JSON.stringify(data));
+            input.value = '';
+            // Тут можешь добавить отправку на сервер, например через WebSocket или fetch
+        }
+    });
 }
+
+// Функция для отображения сообщения в чате
+function appendChatMessage(sender, message) {
+    const chatBox = document.getElementById('chat-messages');
+    const msgElement = document.createElement('div');
+    msgElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+    chatBox.appendChild(msgElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 function sendShipsToServer() {
 
     if (playerShips.length==10)

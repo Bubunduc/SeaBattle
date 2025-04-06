@@ -51,7 +51,7 @@
                 console.log("Connected: " + frame);
                 stompClient.subscribe('/topic/game/' + gameOwner, function (response) {
                     var data = JSON.parse(response.body);
-
+                    console.log("data = ",data)
                     switch (data.action) {
                         case "connect":
                             console.log("Сообщение от сервера:",data);
@@ -134,6 +134,14 @@
                             }
                             gameEnd();
                             break;
+                        case "chat":
+                            console.log(username,data.sender)
+                            if (username != data.sender)
+                            {
+                                appendChatMessage(opponent, data.message)
+                            }
+                            break;
+
                         default:
                             console.warn("Неизвестное действие:", data);
                     }

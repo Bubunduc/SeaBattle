@@ -1,5 +1,6 @@
 package com.seabattle.Course_work.controllers;
 import com.seabattle.Course_work.components.GameSessionManager;
+import com.seabattle.Course_work.models.Message;
 import com.seabattle.Course_work.models.Result;
 import com.seabattle.Course_work.services.ResultService;
 import com.seabattle.Course_work.services.UserService;
@@ -313,10 +314,13 @@ public class GameController {
         userService.updateLoses(username);
         /** Сохранение результата об игры в бд*/
         resultService.saveResult(winner,username);
-
-
-
         simpMessagingTemplate.convertAndSend("/topic/game/" + gameOwner, data);
+    }
+    @MessageMapping("/game/chat")
+    public void chat(Message message)
+    {
+        String gameOwner = message.getGame_owner();
+        simpMessagingTemplate.convertAndSend("/topic/game/" + gameOwner,message);
     }
 
 
