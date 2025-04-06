@@ -1,13 +1,13 @@
 function addFightElements() {
 
-    const footer = document.querySelector("footer");
+    const chat = document.getElementById("chat");
 
     const button = document.createElement("button");
     button.classList.add("btn", "btn-primary", "mt-3");
     button.id = "attackButton";
     button.textContent = "Атаковать";
     button.onclick = sendAttackToServer;
-    footer.parentNode.insertBefore(button, footer);
+    chat.parentNode.insertBefore(button, chat);
 }
 function updateTurn(name)
 {

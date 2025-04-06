@@ -38,7 +38,9 @@ function showGameField() {
             <button onclick="setCurrentShip(1)">Подлодка (1 клетка)</button>
         </div>
         <button id="randomplace" class="btn btn-primary mt-3">Расставить корабли случайно</button>
+        <div>
         <button id="sendShipsBtn" class="btn btn-primary mt-3">Отправить корабли</button>
+           </div>
 
         
         <div id="chat" class="mt-5">
@@ -73,14 +75,66 @@ function showGameField() {
             }
             stompClient.send('/app/game/chat', {}, JSON.stringify(data));
             input.value = '';
-            // Тут можешь добавить отправку на сервер, например через WebSocket или fetch
+
         }
     });
 }
-//случайно размещение кораблей на сервере
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+function getRandomDirection()
+{
+    var random_num = getRandomInt(2)
+    if (random_num == 0)
+    {
+        return "horizontal";
+    }
+    else
+    {
+        return "vertical";
+    }
+}
+function getRandomCoordinates() {
+    const x = Math.floor(Math.random() * 10);
+    const y = Math.floor(Math.random() * 10);
+    return { "x": x, "y": y };
+
+
+}
+
+//случайно размещение кораблей на поле
 function randomPlace()
 {
-
+    clearShips('player')
+    remainingShips = {
+        4: 1, // Линкор (1 корабль длиной 4 клетки)
+        3: 2, // Крейсеры (2 корабля длиной 3 клетки)
+        2: 3, // Эсминцы (3 корабля длиной 2 клетки)
+        1: 4  // Подлодки (4 корабля длиной 1 клетка)
+    };
+    playerShips = [];
+    renderRemainingShips();
+    var length = 1
+    while (playerShips.length!=10)
+    {
+        if (remainingShips[length]!=0) {
+            var coords = getRandomCoordinates();
+            var direction = getRandomDirection();
+            console.log(coords,direction,length)
+            if (canPlaceShip(coords["x"],coords["y"],length,direction)==true)
+            {
+                placeShip(coords["x"],coords["y"],length,direction)
+            }
+        }
+        if (remainingShips[length]==0)
+        {
+            length+=1;
+        }
+        if (length>4)
+        {
+            break;
+        }
+    }
 }
 // Функция для отображения сообщения в чате
 function appendChatMessage(sender, message) {
@@ -107,6 +161,7 @@ function sendShipsToServer() {
         document.getElementById('remaining-ships').classList.add("hidden")
         document.getElementById('shiplength').classList.add("hidden")
         document.getElementById('directionBtn').classList.add("hidden")
+        document.getElementById('randomplace').classList.add("hidden")
         alert("Корабли отправлены противнику");
     }
     else {
@@ -114,9 +169,12 @@ function sendShipsToServer() {
     }
 
 }
-
+function clearShips(type) {
+    const cells = document.querySelectorAll(`#${type}-field .game-cell.ship`);
+    cells.forEach(cell => cell.classList.remove('ship'));
+}
 function createField(type) {
-    let fieldHTML = '<table class="game-table">';
+    let fieldHTML = `<table id ="${type}-field" class="game-table">`;
 
     // Создаем таблицу 10x10
     for (let i = 0; i < 10; i++) {
@@ -214,7 +272,7 @@ function placeShip(row, col, length, direction) {
 
     playerShips.push({ length, cells });
     console.log(playerShips)
-    updateRemainingShips(currentShip);
+    updateRemainingShips(length);
     renderRemainingShips();
     return true;
 }
