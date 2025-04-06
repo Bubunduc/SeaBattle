@@ -76,6 +76,7 @@ public class GameController {
         return "game/game";
     }
 
+
     /**
      * Мапинг, обрабатывающий присоединение к существующей игре
      * @param model
@@ -163,7 +164,20 @@ public class GameController {
         return "game/play";
 
     }
+    @GetMapping("/game/play_computer")
+    public String playAi(Model model)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            model.addAttribute("isAuthenticated", false);
+            model.addAttribute("username", null);
+        } else {
+            model.addAttribute("isAuthenticated", true);
+            model.addAttribute("username", authentication.getName());
+        }
+        return "game/play_computer";
+    }
     /**
      * Мапинг, обрабатывающий отправку данных со страницы подключения
      * @param gameOwner -имя владельца игры, оно передается для подключения к игре
